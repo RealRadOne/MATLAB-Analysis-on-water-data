@@ -1,0 +1,27 @@
+% Enter your MATLAB Code below
+readChId = 575447;
+writeChId =592404;              % Replace with your channel number
+writeKey = 'H5JK43NWTZ6VBUMD';  % Replace with your channel write key
+turbidity = thingSpeakRead(readChId,'fields',1,'NumDays',5);
+readData=581913;
+PH = thingSpeakRead(readChId,'fields',1,'NumDays',5);
+X_train=int8(turbidity);
+Y_train=int8(PH);
+msum=multsum(X_train,Y_train)
+num=msum-mean(X_train)*mean(Y_train)
+den=mean((power(X_train,2)))-mean(X_train)^2
+m=num/den
+c=mean(Y_train)-m*mean(X_train)
+Fnlfn(m,X_train,c)
+function pred=Fnlfn(m,X_train,c)
+   for i=1:61
+       Y_pred=0;
+       Y_pred=m*X_train(i)+c
+   end
+end
+function sum=multsum(X_train,Y_train)
+    sum=0;
+    for i=1:61
+        sum=sum+(X_train(i)*Y_train(i));
+    end
+end

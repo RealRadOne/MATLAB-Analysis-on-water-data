@@ -1,0 +1,35 @@
+% Enter your MATLAB Code below
+readData=592404;
+writeData =592404;              % Replace with your channel number
+writeKey = 'H5JK43NWTZ6VBUMD';  % Replace with your channel write key
+pH = thingSpeakRead(readData,'fields',1,'NumDays',9);
+pH = pH(~isnan(pH))';
+turbidity= thingSpeakRead(readData,'fields',2,'NumDays',9);
+turbidity = turbidity(~isnan(turbidity))';
+depth=thingSpeakRead(readData,'fields',2,'NumDays',9);
+depth = depth(~isnan(depth))';
+numdata=numel(depth);
+weights=randi([1,5],4);
+out=perceptron(pH,turbidity,depth,weights,numdata);
+function y=perceptron(pH,turbidity,depth,weights,numdata)
+distilled=[7,0.75,25];
+dec={};
+yf={};
+dout=activation(distilled(1)*weights(1)+distilled(2)*weights(2)+distilled(3)*weights(3))
+for i=1:numdata
+    dat1=pH(i)*weights(1)+turbidity(i)*weights(2)+depth(i)*weights(3);
+    lout=activation(dat1);
+    if lout>=dout
+        y=1;
+    else
+        y=0;
+    end
+    dec=[dec,lout];
+    yf=[yf,y];
+end
+yf
+end
+function y=activation(x)
+y=1/(1+exp(x));
+end
+
